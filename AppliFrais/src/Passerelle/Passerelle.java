@@ -255,4 +255,34 @@ public class Passerelle
 			return res.getString(1);
 		return null;
 	}
+	
+	/**
+	 * Vérifier le login et mdp passés en paramètre (existence dans
+	 * la table compatble).
+	 * 
+	 * @param log
+	 * 		Login du compatble.
+	 * @param mdp
+	 * 		Mot de passe du comptable.
+	 * @return
+	 * 	Retourne vrai si le couple login/mdp est valide (présent dans la table comptable),
+	 * sinon faux.
+	 * @throws SQLException 
+	 */
+	public static boolean verifierConnexion(String log, String mdp) throws SQLException
+	{
+		Connection c = Connexion.getConnexion();
+		
+		PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM comptable " +
+				"WHERE login = ? " +
+				"AND mdp = ?");
+		
+		ps.setString(1, log);
+		ps.setString(2, mdp);
+		
+		ResultSet rs = ps.executeQuery();
+		
+		rs.next();
+		return rs.getInt(1) != 0;
+	}
 }

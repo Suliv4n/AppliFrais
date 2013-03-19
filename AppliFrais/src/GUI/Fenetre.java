@@ -2,6 +2,7 @@ package GUI;
 
 
 import java.awt.Dimension;
+import java.awt.Toolkit;
 
 import javax.swing.*;
 
@@ -17,7 +18,10 @@ public class Fenetre extends JFrame
     {
         super("Fenetre");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(new Dimension(500,500));
+        setLocationRelativeTo(null);
+        setSize(500, 500);
+        centrer();
+        
         
         //MENU------------------------------
         menu = new JMenuBar();
@@ -29,9 +33,12 @@ public class Fenetre extends JFrame
         
         setJMenuBar(menu);
         //FIN MENU--------------------------
-        
-        
-        
+    }
+    
+    private void centrer()
+    {
+    	Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+    	setLocation((screen.width - getSize().width)/2,(screen.height - getSize().height)/2); 
     }
 
 }

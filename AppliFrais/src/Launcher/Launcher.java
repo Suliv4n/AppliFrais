@@ -1,4 +1,7 @@
+package Launcher;
 import java.sql.SQLException;
+
+import javax.swing.JOptionPane;
 
 import Coeur.FicheFrais;
 import Coeur.Visiteur;
@@ -28,6 +31,8 @@ public class Launcher
 		
 		fenetre = new Fenetre();
 		fenetre.setVisible(true);
+		
+		connecter();
 	}
 	
 	/**
@@ -35,7 +40,15 @@ public class Launcher
 	 */
 	public static void connecter()
 	{
-		//FenetreConnexion con = new FenetreConnexion(, )
+		FenetreConnexion con = new FenetreConnexion();
+		con.setVisible(true);
+	}
+	
+	public static void estConnecte(boolean b)
+	{
+		connecte = b;
+		//JOptionPane jop = new JOptionPane();
+		//jop.showMessageDialog(null,"Connection = " + connecte,"test",JOptionPane.PLAIN_MESSAGE);
 	}
 	
 }
