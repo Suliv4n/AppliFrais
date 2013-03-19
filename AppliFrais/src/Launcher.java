@@ -3,15 +3,16 @@ import java.sql.SQLException;
 import Coeur.FicheFrais;
 import Coeur.Visiteur;
 import GUI.Fenetre;
+import GUI.FenetreConnexion;
 
 
 
 
 public class Launcher 
 {	
-	static private boolean connecte = false;
+	private static boolean connecte = false;
 	
-	
+	public static Fenetre fenetre;
 	
 	public static void main(String[] args)
 	{
@@ -25,13 +26,16 @@ public class Launcher
 			System.out.println("Erreur driver non chargé : "+e);
 		}
 		
-		Fenetre fenetre = new Fenetre();
+		fenetre = new Fenetre();
 		fenetre.setVisible(true);
 	}
 	
+	/**
+	 * Connecte un comptable pour utiliser l'application.
+	 */
 	public static void connecter()
 	{
-
+		//FenetreConnexion con = new FenetreConnexion(, )
 	}
 	
 }
