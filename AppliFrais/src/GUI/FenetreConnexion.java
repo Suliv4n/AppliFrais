@@ -22,7 +22,6 @@ public class FenetreConnexion extends JDialog
 		
 		this.add(lab_id);
 		this.add(tf_id);
-		
 	}
 	
 	
