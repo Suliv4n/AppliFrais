@@ -9,6 +9,7 @@ import java.sql.SQLException;
 
 import javax.swing.*;
 
+
 public class FenetreConnexion extends JDialog implements ActionListener
 {
 	
@@ -23,6 +24,7 @@ public class FenetreConnexion extends JDialog implements ActionListener
 		super(new JFrame(), "Connexion", true);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
+		setResizable(false);
 		
 		JLabel lab_id = new JLabel("Identifiant : ");
 		JLabel lab_mdp = new JLabel("Mot de passe : ");		
@@ -63,8 +65,16 @@ public class FenetreConnexion extends JDialog implements ActionListener
 		this.add(p2);
 		this.add(p3);
 		this.pack();
+		centrer();
 	}
 
+	
+    private void centrer()
+    {
+    	Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+    	setLocation((screen.width - getSize().width)/2,(screen.height - getSize().height)/2); 
+    }
+	
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{

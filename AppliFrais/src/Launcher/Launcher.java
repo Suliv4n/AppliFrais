@@ -47,6 +47,7 @@ public class Launcher
 	public static void estConnecte(boolean b)
 	{
 		connecte = b;
+		fenetre.setConnecte(b);
 		//JOptionPane jop = new JOptionPane();
 		//jop.showMessageDialog(null,"Connection = " + connecte,"test",JOptionPane.PLAIN_MESSAGE);
 	}
