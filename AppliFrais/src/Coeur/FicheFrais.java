@@ -1,4 +1,5 @@
 package Coeur;
+import java.awt.Color;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -194,5 +195,31 @@ public class FicheFrais
 		}
 		
 		return libMois + " " + annee; 
+	}
+	
+	
+	public Color getColor()
+	{
+		if(idEtat.equals("CL"))
+		{
+			return Color.DARK_GRAY; //gris
+		}
+		else if(idEtat.equals("CR"))
+		{
+			return Color.orange;  //orange
+		}
+		else if(idEtat.equals("RB"))
+		{
+			return new Color(0,100,0); //Vert
+		}
+		else if(idEtat.equals("VA"))
+		{
+			return Color.blue; //bleu
+		}
+		else
+		{
+			return Color.black;  //noir
+		}
+		
 	}
 }
