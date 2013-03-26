@@ -11,6 +11,7 @@ import java.util.Date;
 import Coeur.FicheFrais;
 import Coeur.LigneFraisForfait;
 import Coeur.LigneFraisHorsForfait;
+import Coeur.Visiteur;
 
 
 public class Passerelle 
@@ -284,5 +285,23 @@ public class Passerelle
 		
 		rs.next();
 		return rs.getInt(1) != 0;
+	}
+	
+	public static ArrayList<Visiteur> getLesVisiteurs() throws SQLException
+	{
+		Connection c = Connexion.getConnexion();
+		String req = "SELECT * FROM visiteur";
+		
+		ResultSet res = c.createStatement().executeQuery(req);
+		
+		ArrayList<Visiteur> lesVisiteurs = new ArrayList<Visiteur>();
+		
+		while(res.next())
+		{
+			lesVisiteurs.add(new Visiteur(res.getString(1)));
+			
+		}
+		
+		return lesVisiteurs;
 	}
 }

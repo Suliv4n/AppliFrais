@@ -142,14 +142,57 @@ public class FicheFrais
 	}
 
 
+	public String toString()
+	{
+		return "Fiche de : "+formatMois();		
+	}
 
-
-
-
-
-
-
-
-
-	
+	private String formatMois()
+	{
+		String annee = mois.substring(0,4);
+		String libMois = "";
+		
+		int numMois = Integer.parseInt(mois.substring(4,6));
+		switch(numMois)
+		{
+		case(1):
+			libMois = "Janvier";
+			break;
+		case(2):
+			libMois = "Février";
+			break;
+		case(3):
+			libMois = "Mars";
+			break;
+		case(4):
+			libMois = "Avril";
+			break;
+		case(5):
+			libMois = "Mai";
+			break;
+		case(6):
+			libMois = "Juin";
+			break;
+		case(7):
+			libMois = "Juillet";
+			break;
+		case(8):
+			libMois = "Août";
+			break;
+		case(9):
+			libMois = "Septembre";
+			break;
+		case(10):
+			libMois = "Octobre";
+			break;
+		case(11):
+			libMois = "Novembre";
+			break;
+		case(12):
+			libMois = "Décembre";
+			break;
+		}
+		
+		return libMois + " " + annee; 
+	}
 }

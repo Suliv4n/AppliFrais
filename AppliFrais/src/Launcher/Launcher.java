@@ -1,5 +1,6 @@
 package Launcher;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
@@ -7,6 +8,7 @@ import Coeur.FicheFrais;
 import Coeur.Visiteur;
 import GUI.Fenetre;
 import GUI.FenetreConnexion;
+import Passerelle.Passerelle;
 
 
 
@@ -17,9 +19,10 @@ public class Launcher
 	
 	public static Fenetre fenetre;
 	
+	public static ArrayList<Visiteur>lesVisiteurs; //OOKKKKAAAAAYYY!
+	
 	public static void main(String[] args)
 	{
-		//connecter();
 		try
 		{
 			Class.forName("com.mysql.jdbc.Driver");
@@ -29,10 +32,17 @@ public class Launcher
 			System.out.println("Erreur driver non chargé : "+e);
 		}
 		
-		fenetre = new Fenetre();
-		fenetre.setVisible(true);
-		
-		connecter();
+		try 
+		{
+			lesVisiteurs = Passerelle.getLesVisiteurs();
+			fenetre = new Fenetre();
+			fenetre.setVisible(true);
+			connecter();
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	/**

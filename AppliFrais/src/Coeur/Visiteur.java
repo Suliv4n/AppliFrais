@@ -55,4 +55,13 @@ public class Visiteur
 		return lesFichesFrais;
 	}
 	
+	public String toString()
+	{
+		return nom + " " + prenom;
+	}
+
+	public String getId() 
+	{
+		return id;
+	}
 }
