@@ -63,7 +63,7 @@ public class Passerelle
 	 * @param mois
 	 * 		Mois coorespondant à la fiche.
 	 * @return
-	 * 		Une ArrayList de LigneFraisForfait "attaché" à la fiche.
+	 * 		Une ArrayList de LigneFraisForfait correspondant à la fiche.
 	 *  
 	 * @throws SQLException
 	 */
@@ -75,7 +75,8 @@ public class Passerelle
 		Statement statement = conn.createStatement();
 		String req = "SELECT * FROM Lignefraisforfait, fraisforfait " +
 				"WHERE idVisiteur = '"+idVisiteur+"' "+
-				"AND mois = '"+mois+"'";
+				"AND mois = '"+mois+"'" +
+				"AND fraisforfait.id = idFraisForfait";
 		ResultSet res = statement.executeQuery(req);
 		
 		while(res.next()) {
@@ -229,10 +230,11 @@ public class Passerelle
 		String req = "SELECT nom FROM visiteur " +
 				"WHERE id = '"+id+"'";
 		ResultSet res = c.createStatement().executeQuery(req);
-		
+		String nom = null;
 		if(res.next())
-			return res.getString(1);
-		return null;
+			nom = res.getString(1);
+		res.close();
+		return nom;
 	}
 	
 	
@@ -284,7 +286,10 @@ public class Passerelle
 		ResultSet rs = ps.executeQuery();
 		
 		rs.next();
-		return rs.getInt(1) != 0;
+		boolean ok = rs.getInt(1) != 0;
+		ps.close();
+		rs.close();
+		return ok;
 	}
 	
 	public static ArrayList<Visiteur> getLesVisiteurs() throws SQLException
