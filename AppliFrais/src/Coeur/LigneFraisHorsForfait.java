@@ -80,7 +80,9 @@ public class LigneFraisHorsForfait {
 	 */
 	public boolean estRefuse()
 	{
-		return libelle.substring(0,7).equals("REFUSE:");
+		if(libelle.length()>=7)
+			return libelle.substring(0,7).equals("REFUSE:");
+		return false;
 	}
 
 

@@ -12,6 +12,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -159,7 +160,6 @@ public class Fenetre extends JFrame implements ActionListener
         JPanel p2 = new JPanel();
         JLabel lab_listeFicheFrais = new JLabel("Fiches Frais");
         liste_fichesFrais = new JComboBox(((Visiteur)liste_visiteurs.getSelectedItem()).getFiches().toArray());
-       
         p2.setLayout(new FlowLayout(FlowLayout.LEFT));
         p2.add(lab_listeFicheFrais);      
         
@@ -216,7 +216,7 @@ public class Fenetre extends JFrame implements ActionListener
         layout.putConstraint(SpringLayout.NORTH, lignesHorsFraisForfaitPanel, 5, SpringLayout.SOUTH, lignesFraisForfaitsPanel);
         
         tout_deselectionner = new JButton("Tout déselectionner");
-        tout_selectionner = new JButton("Sélectionner");
+        tout_selectionner = new JButton("Tout sélectionner");
         refuser = new JButton("Refuser");
         accepter = new JButton("Accepter");
         
@@ -226,10 +226,7 @@ public class Fenetre extends JFrame implements ActionListener
 		refuser.addActionListener(this);
         
         
-        lignesHorsFraisForfaitPanel.setVisible(false);
-        
-        
-        
+        lignesHorsFraisForfaitPanel.setVisible(false);        
     }
     
     private void centrer()

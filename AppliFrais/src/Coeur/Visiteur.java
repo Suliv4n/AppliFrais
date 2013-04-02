@@ -2,6 +2,7 @@ package Coeur;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import Passerelle.Passerelle;
 
@@ -27,6 +28,7 @@ public class Visiteur
 		this.prenom = Passerelle.getPrenomVisiteur(id);
 	
 		lesFichesFrais = Passerelle.get_fiches_frais_visiteur(id);
+		Collections.sort(lesFichesFrais);
 	}
 	
 	/**

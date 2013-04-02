@@ -6,7 +6,7 @@ import java.util.Date;
 
 import Passerelle.Passerelle;
 
-public class FicheFrais 
+public class FicheFrais implements Comparable
 {
 	private String mois;
 	private String idVisiteur;
@@ -221,5 +221,39 @@ public class FicheFrais
 			return Color.black;  //noir
 		}
 		
+	}
+
+
+
+
+	@Override
+	public int compareTo(Object o) 
+	{
+		boolean comparer;
+		int annee1 = Integer.parseInt(mois.substring(0,4));
+		int annee2 = Integer.parseInt(((FicheFrais)o).mois.substring(0,4));
+		
+		if(annee1 > annee2)
+		{
+			return -1;
+		}
+		else if(annee1 < annee2)
+		{
+			return 1;
+		}
+		
+		int numMois1 = Integer.parseInt(mois.substring(4,6));
+		int numMois2 = Integer.parseInt(((FicheFrais)o).mois.substring(4,6));
+		
+		if(numMois1 > numMois2)
+		{
+			return -1;
+		}
+		else if(numMois1 < numMois2)
+		{
+			return 1;
+		}
+		
+		return 0;
 	}
 }
