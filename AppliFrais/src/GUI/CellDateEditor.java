@@ -19,22 +19,27 @@ public class CellDateEditor extends AbstractCellEditor implements TableCellEdito
 	public CellDateEditor(Date date) 
 	{		
 		//stratégie récupérer l'année :
-		String[] split = date.toString().split(" ");
-		int year = Integer.parseInt(split[5]);
+		String[] split = date.toString().split("-");
+		int year = Integer.parseInt(split[0]);
+		int month = Integer.parseInt(split[1]) - 1;
+		
+		System.out.println(month + "   "  + date);
 		
 		Calendar calendarMin = Calendar.getInstance();
 		calendarMin.setTime(date);
-		calendarMin.set(year, calendarMin.MONTH, 1);
+		calendarMin.set(year, month, 1);
 		System.out.println(calendarMin.getTime());
 			
 		Calendar calendarMax = Calendar.getInstance();
 		calendarMax.setTime(date);
-		calendarMax.set(year, calendarMax.MONTH, 31);
+		calendarMax.set(year, month, 31);
 		System.out.println(calendarMax.getTime());
+		
+		dateCser = new JDateChooser();
 		
 		dateCser.setMinSelectableDate(calendarMin.getTime());
 		dateCser.setMaxSelectableDate(calendarMax.getTime());
-		
+		dateCser.setDate(date);
 		
 		
 		JTextFieldDateEditor text =(JTextFieldDateEditor)dateCser.getDateEditor().getUiComponent();

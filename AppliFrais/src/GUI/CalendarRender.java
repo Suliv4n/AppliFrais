@@ -19,7 +19,7 @@ public class CalendarRender implements TableCellRenderer
             int column) 
     {
     	JDateChooser dateChooser = new JDateChooser();
-    	SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy");
+    	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     	
     	
     	try 

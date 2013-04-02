@@ -12,6 +12,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.print.attribute.standard.DateTimeAtCompleted;
@@ -85,6 +86,12 @@ public class Fenetre extends JFrame implements ActionListener
     
     private HashMap<String, JTextField> qteLigneFraisForfaitTB;
     
+    //boutons ligne frais hors forfait
+    private JButton tout_selectionner;
+    private JButton tout_deselectionner;
+    private JButton accepter;
+    private JButton refuser;
+    //
     public Fenetre() throws SQLException
     {
     	
@@ -208,9 +215,21 @@ public class Fenetre extends JFrame implements ActionListener
         //layout.putConstraint(SpringLayout.WEST, lignesFraisForfaitsPanel, 5, SpringLayout.NORTH, selectionFichePanel);
         layout.putConstraint(SpringLayout.NORTH, lignesHorsFraisForfaitPanel, 5, SpringLayout.SOUTH, lignesFraisForfaitsPanel);
         
-        //Init TextBoxes :
+        tout_deselectionner = new JButton("Tout déselectionner");
+        tout_selectionner = new JButton("Sélectionner");
+        refuser = new JButton("Refuser");
+        accepter = new JButton("Accepter");
+        
+		tout_deselectionner.addActionListener(this);
+		tout_selectionner.addActionListener(this);
+		accepter.addActionListener(this);
+		refuser.addActionListener(this);
+        
         
         lignesHorsFraisForfaitPanel.setVisible(false);
+        
+        
+        
     }
     
     private void centrer()
@@ -254,8 +273,81 @@ public class Fenetre extends JFrame implements ActionListener
 		{
 			setFiche((FicheFrais)liste_fichesFrais.getSelectedItem());
 		}
+		
+		//-----BOUTONS LIGNES HORS FRAIS FORFAIT--------
+		else if(e.getSource().equals(tout_selectionner))
+		{
+			this.toutSelectionner();
+		}
+		else if(e.getSource().equals(tout_deselectionner))
+		{
+			this.toutDeselectionner();
+		}
+		else if(e.getSource().equals(refuser))
+		{
+			this.refuserLignesFraisHorsForfait();
+		}
+		else if(e.getSource().equals(accepter))
+		{
+			this.accepterLignesFraisHorsForfait();
+		}
+		
 	}
 	
+	/**
+	 * Refuse les lignes frais hors forfait sélectionnées.
+	 */
+	private void refuserLignesFraisHorsForfait() 
+	{
+		for(int i = 0; i<lignesHorsFraisForfaitTable.getRowCount();i++)
+		{
+			if((Boolean) lignesHorsFraisForfaitTable.getValueAt(i, 3))
+			{
+				this.current_fiche.getLignesFraisHorsForfait().get(i).refuser();
+				this.lignesHorsFraisForfaitTable.setValueAt(current_fiche.getLignesFraisHorsForfait().get(i).getLibelle(), i, 0);
+				this.lignesHorsFraisForfaitTable.setValueAt(current_fiche.getLignesFraisHorsForfait().get(i).getMontant(), i, 2);
+			}
+		}
+	}
+	
+	/**
+	 * Accepte les lignes frais hors forfait sélectionnées.
+	 */
+	private void accepterLignesFraisHorsForfait() 
+	{
+		for(int i = 0; i<lignesHorsFraisForfaitTable.getRowCount();i++)
+		{
+			if((Boolean) lignesHorsFraisForfaitTable.getValueAt(i, 3))
+			{
+				this.current_fiche.getLignesFraisHorsForfait().get(i).accepter();
+				this.lignesHorsFraisForfaitTable.setValueAt(current_fiche.getLignesFraisHorsForfait().get(i).getLibelle(), i, 0);
+				this.lignesHorsFraisForfaitTable.setValueAt(current_fiche.getLignesFraisHorsForfait().get(i).getMontant(), i, 2);
+			}
+		}
+	}
+
+	/**
+	 * Coche toutes les lignes de la table des lignes frais hors forfait.
+	 */
+	private void toutSelectionner()
+	{
+		for(int i = 0; i<lignesHorsFraisForfaitTable.getRowCount();i++)
+		{
+			lignesHorsFraisForfaitTable.setValueAt(true, i, 3);
+		}
+	}
+	
+	/**
+	 * Décoche toutes les lignes de la table des lignes frais hors forfait.
+	 */
+	private void toutDeselectionner()
+	{
+		for(int i = 0; i<lignesHorsFraisForfaitTable.getRowCount();i++)
+		{
+			lignesHorsFraisForfaitTable.setValueAt(false, i, 3);
+		}
+	}
+
 	/**
 	 * Met à jour les composants de la fenêtre à la sélection d'une fiche.
 	 * 
@@ -263,6 +355,7 @@ public class Fenetre extends JFrame implements ActionListener
 	 */
 	private void setFiche(FicheFrais ficheFrais) 
 	{
+		current_fiche = ficheFrais;
 		updatePanelLignesFraisForfait(ficheFrais);
 		updatePanelLignesHorsFraisForfait(ficheFrais);
 	}
@@ -308,7 +401,7 @@ public class Fenetre extends JFrame implements ActionListener
 		lignesHorsFraisForfaitPanel.setVisible(true);
 		lignesHorsFraisForfaitPanel.removeAll();
 		
-		lignesHorsFraisForfaitPanel.setPreferredSize(new Dimension(600,200));
+		lignesHorsFraisForfaitPanel.setPreferredSize(new Dimension(600,230));
 		
 		//--
 		SpringLayout layout = new SpringLayout();
@@ -332,7 +425,10 @@ public class Fenetre extends JFrame implements ActionListener
 		}
 		
 		lignesHorsFraisForfaitTable = new JTable(lignes,colonnes);
-		lignesHorsFraisForfaitTable.getColumn("Libellé").setPreferredWidth(200);
+		lignesHorsFraisForfaitTable.getColumn("Libellé").setPreferredWidth(100);
+		lignesHorsFraisForfaitTable.getColumn("Date").setPreferredWidth(100);
+		
+		
 		
 		//check box dans la colonne sélectionner : 
 		JCheckBox cb = new JCheckBox();
@@ -341,13 +437,34 @@ public class Fenetre extends JFrame implements ActionListener
 		lignesHorsFraisForfaitTable.getColumn("Sélectionner").setCellRenderer(new CheckBoxRenderer());
 		
 		
-		//datetime colonne 
+		//dateChooser colonne 
 		JDateChooser calendar = new JDateChooser();
 		
 		lignesHorsFraisForfaitTable.getColumnModel().getColumn(1).setCellRenderer(new CalendarRender());
 		
+		if(ficheFrais.getLignesFraisHorsForfait().size()>0)
+			lignesHorsFraisForfaitTable.getColumnModel().getColumn(1).setCellEditor(new CellDateEditor((Date)lignesHorsFraisForfaitTable.getValueAt(0, 1)));
+		
 		JScrollPane scrollTable = new JScrollPane(lignesHorsFraisForfaitTable);
-		lignesHorsFraisForfaitPanel.add(scrollTable);
+		scrollTable.setPreferredSize(new Dimension(550,150));
+		
+		p1.add(scrollTable);
+		lignesHorsFraisForfaitPanel.add(p1);
+		
+		//-----------BOUTONS------------------------------
+
+		JPanel p2 = new JPanel();
+		
+		p2.add(tout_selectionner);
+		p2.add(tout_deselectionner);
+		p2.add(accepter);
+		p2.add(refuser);
+		
+		
+		scrollTable.setVisible(true);
+		layout.putConstraint(SpringLayout.NORTH, p2, 5, SpringLayout.SOUTH, p1);
+		lignesHorsFraisForfaitPanel.add(p2);
+		
 	}
 	
 	public void setConnecte(boolean connecte)

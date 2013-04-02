@@ -25,10 +25,15 @@ public class LigneFraisHorsForfait {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	public double getMontant() {
-		return montant;
+	public double getMontant() 
+	{
+		if(!estRefuse())
+			return montant;
+		else
+			return 0;
 	}
-	public void setMontant(double montant) {
+	public void setMontant(double montant) 
+	{
 		this.montant = montant;
 	}
 	public String getLibelle() {
@@ -46,9 +51,18 @@ public class LigneFraisHorsForfait {
 		this.libelle = libelle;
 	}
 	
-	public void refusser() throws SQLException
+	public void refuser() //throws SQLException
 	{
-		Passerelle.refusserHorsForfait(id);
+		//Passerelle.refusserHorsForfait(id);
+		if(!estRefuse())
+			libelle = "REFUSE:"+libelle;
+	}
+	
+	public void accepter() 
+	{
+		if(estRefuse())
+			libelle = libelle.substring(7);
+		
 	}
 	
 	@Override
@@ -57,6 +71,18 @@ public class LigneFraisHorsForfait {
 				+ ", montant=" + montant + ", libelle=" + libelle + "]";
 	}
 	
+	/**
+	 * Retourne vrai si le libelle indique que la ligne est refusée
+	 * (commence par "REFUSE:"), sinon false.
+	 * 
+	 * @return vrai si le libelle indique que la ligne est refusée
+	 * (commence par "REFUSE:"), sinon false.
+	 */
+	public boolean estRefuse()
+	{
+		return libelle.substring(0,7).equals("REFUSE:");
+	}
+
 
 	
 }
