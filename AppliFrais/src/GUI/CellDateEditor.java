@@ -16,9 +16,24 @@ public class CellDateEditor extends AbstractCellEditor implements TableCellEdito
 
 	private JDateChooser dateCser;
 
-	public CellDateEditor() 
-	{
-		dateCser= new JDateChooser();
+	public CellDateEditor(Date date) 
+	{		
+		//stratégie récupérer l'année :
+		String[] split = date.toString().split(" ");
+		int year = Integer.parseInt(split[5]);
+		
+		Calendar calendarMin = Calendar.getInstance();
+		calendarMin.setTime(date);
+		calendarMin.set(year, calendarMin.MONTH, 1);
+		System.out.println(calendarMin.getTime());
+			
+		Calendar calendarMax = Calendar.getInstance();
+		calendarMax.setTime(date);
+		calendarMax.set(year, calendarMax.MONTH, 31);
+		System.out.println(calendarMax.getTime());
+		
+		dateCser.setMinSelectableDate(calendarMin.getTime());
+		dateCser.setMaxSelectableDate(calendarMax.getTime());
 		
 		
 		
@@ -45,26 +60,7 @@ public class CellDateEditor extends AbstractCellEditor implements TableCellEdito
 			int row,
 			int column) {
 		
-		Date date = dateCser.getDate();
-		
-		//stratégie récupérer l'année :
-		String[] split = dateCser.getDate().toString().split(" ");
-		int year = Integer.parseInt(split[5]);
-		
-		Calendar calendarMin = Calendar.getInstance();
-		calendarMin.setTime(date);
-		calendarMin.set(year, calendarMin.MONTH, 1);
-		System.out.println(calendarMin.getTime());
-			
-		Calendar calendarMax = Calendar.getInstance();
-		calendarMax.setTime(date);
-		calendarMax.set(year, calendarMax.MONTH, 31);
-		System.out.println(calendarMax.getTime());
-		
-		
-		
-		dateCser.setMinSelectableDate(calendarMin.getTime());
-		dateCser.setMaxSelectableDate(calendarMax.getTime());
+
 		return dateCser;
 	}
 } 

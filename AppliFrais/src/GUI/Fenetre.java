@@ -343,7 +343,7 @@ public class Fenetre extends JFrame implements ActionListener
 		
 		//datetime colonne 
 		JDateChooser calendar = new JDateChooser();
-		lignesHorsFraisForfaitTable.getColumnModel().getColumn(1).setCellEditor(new CellDateEditor());
+		
 		lignesHorsFraisForfaitTable.getColumnModel().getColumn(1).setCellRenderer(new CalendarRender());
 		
 		JScrollPane scrollTable = new JScrollPane(lignesHorsFraisForfaitTable);
