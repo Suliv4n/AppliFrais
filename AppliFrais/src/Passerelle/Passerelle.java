@@ -141,17 +141,17 @@ public class Passerelle
 		//Mise à jour des lignes frais forfait.
 		for(LigneFraisForfait l : ficheFrais.getLignesFraisForfait())
 		{
-			String req = "UPDATE ligneFraisForfait" +
-					"SET quantite = ?" +
+			String req = "UPDATE ligneFraisForfait " +
+					"SET quantite = ? " +
 					"WHERE idFraisForfait = ? " +
-					"AND mois = ?" +
+					"AND mois = ? " +
 					"AND idVisiteur = ?";
 			PreparedStatement ps = c.prepareStatement(req);
 			
-			ps.setInt(0, l.getQuantite());
-			ps.setString(1, l.getIdFraisForfait());
-			ps.setString(2,ficheFrais.getMois());
-			ps.setString(3, ficheFrais.getIdVisiteur());
+			ps.setInt(1, l.getQuantite());
+			ps.setString(2, l.getIdFraisForfait());
+			ps.setString(3,ficheFrais.getMois());
+			ps.setString(4, ficheFrais.getIdVisiteur());
 			ps.execute();
 			ps.close();
 		}
@@ -160,28 +160,33 @@ public class Passerelle
 		for(LigneFraisHorsForfait hf : ficheFrais.getLignesFraisHorsForfait())
 		{
 			String req = "UPDATE ligneFraisHorsForfait " +
-					"SET date = now(), montant = ?, libelle = ?" +
+					"SET date = ?, montant = ?, libelle = ? " +
 					"WHERE id = ?";
+			
 			PreparedStatement ps = c.prepareStatement(req);
-			ps.setDouble(0, hf.getMontant());
-			ps.setInt(1, hf.getId());
-			ps.setString(2, hf.getLibelle());
+			
+			ps.setDate(1, hf.getDate());
+			ps.setDouble(2, hf.getMontant());
+			ps.setString(3, hf.getLibelle());
+			ps.setInt(4, hf.getId());
+			
+			System.out.println(ps);
 			
 			ps.execute();
 			ps.close();
 		}
 		
 		//Mise à jour de la Fiche de Frais		
-		String req = "UPDATE FicheFrais" +
-				"SET nbJustificatifs = ? , montantValide = ?, idEtat = 'VA'" +
-				"WHERE mois = ?" +
-				"AND idVisiteur = ?";
+		String req = "UPDATE FicheFrais " +
+				"SET nbJustificatifs = ? , montantValide = ?, idEtat = 'VA' " +
+				"WHERE mois = ? " +
+				"AND idVisiteur = ? ";
 		PreparedStatement ps = c.prepareStatement(req);
 		
-		ps.setInt(0, ficheFrais.getNbJustificatifs());
-		ps.setDouble(1, ficheFrais.getMontantValide());
-		ps.setString(2, ficheFrais.getMois());
-		ps.setString(3, ficheFrais.getIdVisiteur());
+		ps.setInt(1, ficheFrais.getNbJustificatifs());
+		ps.setDouble(2, ficheFrais.getMontantValide());
+		ps.setString(3, ficheFrais.getMois());
+		ps.setString(4, ficheFrais.getIdVisiteur());
 		ps.close();		
 	}
 	

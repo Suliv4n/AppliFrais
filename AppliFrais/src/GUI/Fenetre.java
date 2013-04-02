@@ -18,7 +18,12 @@ import java.util.HashMap;
 
 import javax.print.attribute.standard.DateTimeAtCompleted;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
+import javax.swing.text.BadLocationException;
 
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
@@ -56,7 +61,7 @@ import Passerelle.*;
  * @author gsh
  *
  */
-public class Fenetre extends JFrame implements ActionListener
+public class Fenetre extends JFrame implements ActionListener, TableModelListener, DocumentListener
 {
     /**//**//**//**//**//**//**//**//**//**//**/
    /**/  private FicheFrais current_fiche; /**/
@@ -93,6 +98,11 @@ public class Fenetre extends JFrame implements ActionListener
     private JButton accepter;
     private JButton refuser;
     //
+    
+    //
+    private JPanel panVal;
+    private JButton valider;
+    //
     public Fenetre() throws SQLException
     {
     	
@@ -106,7 +116,7 @@ public class Fenetre extends JFrame implements ActionListener
         
         lignesFraisForfaitsPanel = new JPanel();
         lignesFraisForfaitsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Lignes frais forfait"));
-        //lignesFraisForfaitsPanel.setLayout(new GridLayout());
+        
         
         selectionFichePanel = new JPanel();
         selectionFichePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Selectionner une fiche"));
@@ -115,7 +125,7 @@ public class Fenetre extends JFrame implements ActionListener
         
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setSize(500, 500);
+        setSize(700, 700);
         centrer();
         
         
@@ -215,6 +225,8 @@ public class Fenetre extends JFrame implements ActionListener
         //layout.putConstraint(SpringLayout.WEST, lignesFraisForfaitsPanel, 5, SpringLayout.NORTH, selectionFichePanel);
         layout.putConstraint(SpringLayout.NORTH, lignesHorsFraisForfaitPanel, 5, SpringLayout.SOUTH, lignesFraisForfaitsPanel);
         
+        
+        
         tout_deselectionner = new JButton("Tout déselectionner");
         tout_selectionner = new JButton("Tout sélectionner");
         refuser = new JButton("Refuser");
@@ -226,7 +238,19 @@ public class Fenetre extends JFrame implements ActionListener
 		refuser.addActionListener(this);
         
         
-        lignesHorsFraisForfaitPanel.setVisible(false);        
+        lignesHorsFraisForfaitPanel.setVisible(false);
+        
+        
+        
+        //dernier panel => bouton valider :
+        valider = new JButton("Valider la fiche");
+        panVal = new JPanel();
+        panVal.add(valider);
+        add(panVal);
+        panVal.setVisible(false);
+        valider.addActionListener(this);
+        layout.putConstraint(SpringLayout.NORTH, panVal, 5, SpringLayout.SOUTH, lignesHorsFraisForfaitPanel);   
+        
     }
     
     private void centrer()
@@ -288,9 +312,28 @@ public class Fenetre extends JFrame implements ActionListener
 		{
 			this.accepterLignesFraisHorsForfait();
 		}
-		
+		else if(e.getSource().equals(valider))
+		{
+			this.validerFiche();
+		}		
 	}
 	
+	private void validerFiche() 
+	{
+		try 
+		{
+			current_fiche.valider();
+		} 
+		catch (SQLException e) 
+		{
+			JOptionPane.showMessageDialog(this,
+				    "Une erreur s'est produite lors de la connexion avec la base de données : "
+					+ e.getMessage(),
+				    "Erreur",
+				    JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
 	/**
 	 * Refuse les lignes frais hors forfait sélectionnées.
 	 */
@@ -355,6 +398,7 @@ public class Fenetre extends JFrame implements ActionListener
 		current_fiche = ficheFrais;
 		updatePanelLignesFraisForfait(ficheFrais);
 		updatePanelLignesHorsFraisForfait(ficheFrais);
+		panVal.setVisible(true);
 	}
 
 	private void updatePanelLignesFraisForfait(FicheFrais ficheFrais)
@@ -379,8 +423,12 @@ public class Fenetre extends JFrame implements ActionListener
 			sousPanels[nbLignes - 1].add(libFrais);
 			JTextField tf = new JTextField(4);
 			
+			
+			
 			qteLigneFraisForfaitTB.put(lff.getIdFraisForfait(),tf);
 			tf.setText(String.valueOf(lff.getQuantite()));
+			tf.getDocument().addDocumentListener(this);
+			
 			sousPanels[nbLignes - 1].add(tf);
 			
 			if(nbLignes > 1)
@@ -422,8 +470,10 @@ public class Fenetre extends JFrame implements ActionListener
 		}
 		
 		lignesHorsFraisForfaitTable = new JTable(lignes,colonnes);
-		lignesHorsFraisForfaitTable.getColumn("Libellé").setPreferredWidth(100);
-		lignesHorsFraisForfaitTable.getColumn("Date").setPreferredWidth(100);
+		lignesHorsFraisForfaitTable.getModel().addTableModelListener(this);
+		lignesHorsFraisForfaitTable.getColumn("Libellé").setPreferredWidth(200);
+		lignesHorsFraisForfaitTable.getColumn("Date").setPreferredWidth(70);
+		lignesHorsFraisForfaitTable.getColumn("Montant").setPreferredWidth(50);
 		
 		
 		
@@ -468,6 +518,67 @@ public class Fenetre extends JFrame implements ActionListener
 	{
 		se_deconnecter.setEnabled(connecte);
 		se_connecter.setEnabled(!connecte);
+	}
+
+	@Override
+	public void tableChanged(TableModelEvent e) 
+	{
+		if(e.getType() == TableModelEvent.UPDATE)
+		{
+			for(int i=0; i<lignesHorsFraisForfaitTable.getRowCount();i++)
+			{
+				try
+				{
+					double montant = Double.parseDouble(lignesHorsFraisForfaitTable.getValueAt(i, 2).toString());
+					
+					if(montant < 0)
+					{
+						throw new Exception();
+					}
+					current_fiche.getLignesFraisHorsForfait().get(i).setMontant(montant);
+				}
+				catch(Exception exc)
+				{
+					JOptionPane.showMessageDialog(this,
+						    "La valeur saisie n'est pas valide.",							
+						    "Erreur",
+						    JOptionPane.ERROR_MESSAGE);
+					
+					lignesHorsFraisForfaitTable.setValueAt(current_fiche.getLignesFraisHorsForfait().get(i).getMontant(), i, 2);
+				}
+				
+				current_fiche.getLignesFraisHorsForfait().get(i).setDate(new java.sql.Date(((Date)lignesHorsFraisForfaitTable.getValueAt(i, 2)).getTime()));
+				
+			}
+		}
+		
+	}
+
+	@Override
+	public void changedUpdate(DocumentEvent arg0) 
+	{
+		try {
+			arg0.getDocument().insertString(0, "0", null);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+		
+		JOptionPane.showMessageDialog(this,
+			    "La valeur saisie n'est pas valide.",							
+			    "Test",
+			    JOptionPane.ERROR_MESSAGE);
+	}
+
+	@Override
+	public void insertUpdate(DocumentEvent arg0) 
+	{
+		
+	}
+
+	@Override
+	public void removeUpdate(DocumentEvent arg0) 
+	{
+	
 	}
 
 }

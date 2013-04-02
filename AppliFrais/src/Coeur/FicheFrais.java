@@ -137,9 +137,12 @@ public class FicheFrais implements Comparable
 	
 
 	
+	
 	public void valider() throws SQLException
 	{
 		Passerelle.validerFicheFrais(this);
+		idEtat = "VA";
+		libelleEtat = "Validé";
 	}
 
 
@@ -197,7 +200,10 @@ public class FicheFrais implements Comparable
 		return libMois + " " + annee; 
 	}
 	
-	
+	/**
+	 * Retourne une couleur en fonction de l'état de la fiche.
+	 * @return
+	 */
 	public Color getColor()
 	{
 		if(idEtat.equals("CL"))
