@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.Point;
 import java.awt.TextField;
 import java.awt.Toolkit;
@@ -23,6 +24,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 
 import com.toedter.calendar.JCalendar;
@@ -557,28 +559,47 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 	@Override
 	public void changedUpdate(DocumentEvent arg0) 
 	{
-		try {
+		try 
+		{
 			arg0.getDocument().insertString(0, "0", null);
-		} catch (BadLocationException e) {
+		} 
+		catch (BadLocationException e) 
+		{
 			e.printStackTrace();
 		}
-		
-		JOptionPane.showMessageDialog(this,
-			    "La valeur saisie n'est pas valide.",							
-			    "Test",
-			    JOptionPane.ERROR_MESSAGE);
 	}
 
 	@Override
 	public void insertUpdate(DocumentEvent arg0) 
 	{
-		
+		try
+		{
+			int qte = Integer.parseInt(arg0.getDocument().getText(0, arg0.getDocument().getLength()));
+			current_fiche.getLignesFraisForfait().get(0).setQuantite(qte);
+			System.out.println(current_fiche.getLignesFraisForfait().get(0).getQuantite());
+			System.out.println(qte);
+		}
+		catch(Exception exc)
+		{
+			int valeur = current_fiche.getLignesFraisForfait().get(0).getQuantite();
+			SwingUtilities.invokeLater(new UpdateTextField(arg0, valeur));
+		}
 	}
 
 	@Override
 	public void removeUpdate(DocumentEvent arg0) 
 	{
-	
+		try
+		{
+			int qte = Integer.parseInt(arg0.getDocument().getText(0, arg0.getDocument().getLength()));
+			current_fiche.getLignesFraisForfait().get(0).setQuantite(qte);
+			System.out.println(current_fiche.getLignesFraisForfait().get(0).getQuantite());
+			System.out.println(qte);
+		}
+		catch(Exception exc)
+		{
+			current_fiche.getLignesFraisForfait().get(0).setQuantite(0);
+		}
 	}
 
 }
