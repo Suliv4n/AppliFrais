@@ -27,11 +27,14 @@ import javax.swing.table.TableColumn;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 
+import org.w3c.dom.Document;
+
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 
 import Coeur.FicheFrais;
 import Coeur.LigneFraisForfait;
+import Coeur.LigneFraisHorsForfait;
 import Coeur.Visiteur;
 import Launcher.Launcher;
 import Passerelle.*;
@@ -92,7 +95,7 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
     
     private JTable lignesHorsFraisForfaitTable;
     
-    private HashMap<String, JTextField> qteLigneFraisForfaitTB;
+    private HashMap<javax.swing.text.Document, LigneFraisForfait> qteLigneFraisForfaitTB;
     
     //boutons ligne frais hors forfait
     private JButton tout_selectionner;
@@ -109,7 +112,7 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
     {
     	
         super("Fenetre");
-        qteLigneFraisForfaitTB = new HashMap<String, JTextField>();
+        qteLigneFraisForfaitTB = new HashMap<javax.swing.text.Document, LigneFraisForfait>();
         
         //Init pseudo group box
         lignesHorsFraisForfaitPanel = new JPanel();
@@ -325,6 +328,7 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 		try 
 		{
 			current_fiche.valider();
+			this.setFiche(current_fiche);
 		} 
 		catch (SQLException e) 
 		{
@@ -401,6 +405,13 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 		updatePanelLignesFraisForfait(ficheFrais);
 		updatePanelLignesHorsFraisForfait(ficheFrais);
 		panVal.setVisible(true);
+		
+		if(current_fiche.getIdEtat().equals("VA") || current_fiche.getIdEtat().equals("RB"))
+		{
+			valider.setEnabled(false);
+			tout_selectionner.setEnabled(false);
+			tout_deselectionner.setEnabled(false);
+		}
 	}
 
 	private void updatePanelLignesFraisForfait(FicheFrais ficheFrais)
@@ -410,6 +421,8 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 		lignesFraisForfaitsPanel.setPreferredSize(new Dimension(200,ficheFrais.getLignesFraisForfait().size()*40));
 		lignesFraisForfaitsPanel.removeAll();
 
+		
+		
 		SpringLayout layout = new SpringLayout();
 		lignesFraisForfaitsPanel.setLayout(layout);
 		
@@ -425,9 +438,15 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 			sousPanels[nbLignes - 1].add(libFrais);
 			JTextField tf = new JTextField(4);
 			
-			
-			
-			qteLigneFraisForfaitTB.put(lff.getIdFraisForfait(),tf);
+			if(current_fiche.getIdEtat().equals("VA") || current_fiche.getIdEtat().equals("RB"))
+			{
+				tf.setEnabled(false);
+			}
+			else
+			{
+				tf.setEnabled(true);
+			}
+			qteLigneFraisForfaitTB.put(tf.getDocument(),lff);
 			tf.setText(String.valueOf(lff.getQuantite()));
 			tf.getDocument().addDocumentListener(this);
 			
@@ -509,11 +528,26 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 		p2.add(accepter);
 		p2.add(refuser);
 		
+		accepter.setEnabled(false);
+		refuser.setEnabled(false);
 		
 		scrollTable.setVisible(true);
 		layout.putConstraint(SpringLayout.NORTH, p2, 5, SpringLayout.SOUTH, p1);
+		lignesHorsFraisForfaitTable.getTableHeader().setReorderingAllowed(false);
 		lignesHorsFraisForfaitPanel.add(p2);
 		
+		if(current_fiche.getIdEtat().equals("VA") || current_fiche.getIdEtat().equals("RB"))
+		{
+			lignesHorsFraisForfaitTable.setEnabled(false);
+			tout_selectionner.setEnabled(false);
+			tout_deselectionner.setEnabled(false);
+		}
+		else
+		{
+			lignesHorsFraisForfaitTable.setEnabled(true);
+			tout_selectionner.setEnabled(true);
+			tout_deselectionner.setEnabled(true);
+		}
 	}
 	
 	public void setConnecte(boolean connecte)
@@ -527,8 +561,19 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 	{
 		if(e.getType() == TableModelEvent.UPDATE)
 		{
+			boolean ligneSelectionnee = false; 
+			for(int i=0; i<lignesHorsFraisForfaitTable.getRowCount() && !ligneSelectionnee;i++)
+			{
+				ligneSelectionnee = (Boolean)lignesHorsFraisForfaitTable.getValueAt(i, 3);
+			}
+			
+			accepter.setEnabled(ligneSelectionnee);
+			refuser.setEnabled(ligneSelectionnee);
+			
+			
 			for(int i=0; i<lignesHorsFraisForfaitTable.getRowCount();i++)
 			{
+
 				try
 				{
 					double montant = Double.parseDouble(lignesHorsFraisForfaitTable.getValueAt(i, 2).toString());
@@ -537,7 +582,22 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 					{
 						throw new Exception();
 					}
+					
 					current_fiche.getLignesFraisHorsForfait().get(i).setMontant(montant);
+
+					if(montant == 0)
+					{
+						current_fiche.getLignesFraisHorsForfait().get(i).refuser();
+					}
+					else
+					{
+						current_fiche.getLignesFraisHorsForfait().get(i).accepter();
+					}
+					
+					if(!lignesHorsFraisForfaitTable.getValueAt(i, 0).equals(current_fiche.getLignesFraisHorsForfait().get(i).getLibelle()))
+					{
+						lignesHorsFraisForfaitTable.setValueAt(current_fiche.getLignesFraisHorsForfait().get(i).getLibelle(), i, 0);
+					}
 				}
 				catch(Exception exc)
 				{
@@ -548,9 +608,7 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 					
 					lignesHorsFraisForfaitTable.setValueAt(current_fiche.getLignesFraisHorsForfait().get(i).getMontant(), i, 2);
 				}
-				
-				current_fiche.getLignesFraisHorsForfait().get(i).setDate(new java.sql.Date(((Date)lignesHorsFraisForfaitTable.getValueAt(i, 2)).getTime()));
-				
+				current_fiche.getLignesFraisHorsForfait().get(i).setDate(new java.sql.Date(((Date)lignesHorsFraisForfaitTable.getValueAt(i, 1)).getTime()));
 			}
 		}
 		
@@ -575,13 +633,11 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 		try
 		{
 			int qte = Integer.parseInt(arg0.getDocument().getText(0, arg0.getDocument().getLength()));
-			current_fiche.getLignesFraisForfait().get(0).setQuantite(qte);
-			System.out.println(current_fiche.getLignesFraisForfait().get(0).getQuantite());
-			System.out.println(qte);
+			qteLigneFraisForfaitTB.get(arg0.getDocument()).setQuantite(qte);
 		}
 		catch(Exception exc)
 		{
-			int valeur = current_fiche.getLignesFraisForfait().get(0).getQuantite();
+			int valeur = qteLigneFraisForfaitTB.get(arg0.getDocument()).getQuantite();
 			SwingUtilities.invokeLater(new UpdateTextField(arg0, valeur));
 		}
 	}
@@ -592,13 +648,13 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 		try
 		{
 			int qte = Integer.parseInt(arg0.getDocument().getText(0, arg0.getDocument().getLength()));
-			current_fiche.getLignesFraisForfait().get(0).setQuantite(qte);
+			qteLigneFraisForfaitTB.get(arg0.getDocument()).setQuantite(qte);
 			System.out.println(current_fiche.getLignesFraisForfait().get(0).getQuantite());
 			System.out.println(qte);
 		}
 		catch(Exception exc)
 		{
-			current_fiche.getLignesFraisForfait().get(0).setQuantite(0);
+			qteLigneFraisForfaitTB.get(arg0.getDocument()).setQuantite(0);
 		}
 	}
 

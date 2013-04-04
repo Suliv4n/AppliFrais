@@ -142,7 +142,7 @@ public class FicheFrais implements Comparable
 	{
 		Passerelle.validerFicheFrais(this);
 		idEtat = "VA";
-		libelleEtat = "Validé";
+		libelleEtat = "Validée et mise en paiement";
 	}
 
 

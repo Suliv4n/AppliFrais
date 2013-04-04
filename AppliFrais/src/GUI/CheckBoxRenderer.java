@@ -13,12 +13,14 @@ import javax.swing.table.TableCellRenderer;
 /**
  * Affiche des checkBox dans une colonne d'une JTable.
  * 
- * @author ?
+ * @author Sulivan
  *
  */
 public class CheckBoxRenderer extends JCheckBox implements TableCellRenderer {
 
-    CheckBoxRenderer() {
+
+
+	CheckBoxRenderer() {
       setHorizontalAlignment(JLabel.CENTER);
     }
 

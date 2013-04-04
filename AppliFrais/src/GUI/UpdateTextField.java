@@ -40,10 +40,19 @@ public class UpdateTextField implements Runnable
 	{
 		try 
 		{
-			//supprime tout
-			e.getDocument().remove(0, e.getDocument().getLength());
-			//remplace par l'ancienne valeur :
-			e.getDocument().insertString(0, String.valueOf(valeur), null);
+			if(e.getDocument().getText(0, e.getDocument().getLength()).isEmpty())
+			{
+				e.getDocument().insertString(0,"0", null);
+			}
+			else
+			{
+				//supprime tout
+				e.getDocument().remove(0, e.getDocument().getLength());
+				//remplace par l'ancienne valeur :
+				e.getDocument().insertString(0, String.valueOf(valeur), null);
+			}
+				
+
 			
 		} 
 		catch (BadLocationException e) 
