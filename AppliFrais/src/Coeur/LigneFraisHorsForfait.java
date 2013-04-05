@@ -27,14 +27,23 @@ public class LigneFraisHorsForfait {
 	}
 	public double getMontant() 
 	{
+		System.out.println(estRefuse()+"-"+libelle);
 		if(!estRefuse())
 			return montant;
 		else
 			return 0;
+		
 	}
 	public void setMontant(double montant) 
 	{
-		this.montant = montant;
+		if(montant != 0)
+		{
+			this.montant = montant;
+		}
+		else
+		{
+			refuser();
+		}
 	}
 	public String getLibelle() 
 	{
@@ -63,6 +72,7 @@ public class LigneFraisHorsForfait {
 	{
 		if(estRefuse())
 			libelle = libelle.substring(7);
+		System.out.println(libelle);
 		
 	}
 	

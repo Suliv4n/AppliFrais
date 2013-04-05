@@ -383,10 +383,15 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 			if((Boolean) lignesHorsFraisForfaitTable.getValueAt(i, 3))
 			{
 				this.current_fiche.getLignesFraisHorsForfait().get(i).accepter();
-
+				
 				String libelle = current_fiche.getLignesFraisHorsForfait().get(i).getLibelle();
-				//System.out.println(libelle);
-				this.lignesHorsFraisForfaitTable.setValueAt(current_fiche.getLignesFraisHorsForfait().get(i).getMontant(), i, 2);
+				
+				double montant = current_fiche.getLignesFraisHorsForfait().get(i).getMontant();
+				
+				System.out.println(montant);
+				
+				this.lignesHorsFraisForfaitTable.setValueAt(montant, i, 2);
+				
 			}
 		}
 	}
@@ -425,7 +430,7 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 		updatePanelLignesHorsFraisForfait(ficheFrais);
 		panVal.setVisible(true);
 		
-		if(current_fiche.getIdEtat().equals("VA") || current_fiche.getIdEtat().equals("RB"))
+		if(!current_fiche.getIdEtat().equals("CL"))
 		{
 			valider.setEnabled(false);
 			tout_selectionner.setEnabled(false);
@@ -465,7 +470,7 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 			sousPanels[nbLignes - 1].add(libFrais);
 			JTextField tf = new JTextField(4);
 			
-			if(current_fiche.getIdEtat().equals("VA") || current_fiche.getIdEtat().equals("RB"))
+			if(!current_fiche.getIdEtat().equals("CL"))
 			{
 				tf.setEnabled(false);
 			}
@@ -568,7 +573,7 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 		
 		
 		
-		if(current_fiche.getIdEtat().equals("VA") || current_fiche.getIdEtat().equals("RB"))
+		if(!current_fiche.getIdEtat().equals("CL"))
 		{
 			lignesHorsFraisForfaitTable.setEnabled(false);
 			tout_selectionner.setEnabled(false);
@@ -631,7 +636,7 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 
 					if(montant == 0)
 					{
-						current_fiche.getLignesFraisHorsForfait().get(i).refuser();
+						//current_fiche.getLignesFraisHorsForfait().get(i).refuser();
 					}
 					else
 					{
