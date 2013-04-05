@@ -23,17 +23,14 @@ public class CellDateEditor extends AbstractCellEditor implements TableCellEdito
 		int year = Integer.parseInt(split[0]);
 		int month = Integer.parseInt(split[1]) - 1;
 		
-		System.out.println(month + "   "  + date);
 		
 		Calendar calendarMin = Calendar.getInstance();
 		calendarMin.setTime(date);
 		calendarMin.set(year, month, 1);
-		System.out.println(calendarMin.getTime());
 			
 		Calendar calendarMax = Calendar.getInstance();
 		calendarMax.setTime(date);
 		calendarMax.set(year, month, 31);
-		System.out.println(calendarMax.getTime());
 		
 		dateCser = new JDateChooser();
 		

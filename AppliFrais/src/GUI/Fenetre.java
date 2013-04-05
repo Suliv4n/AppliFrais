@@ -23,6 +23,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -111,20 +112,21 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
     public Fenetre() throws SQLException
     {
     	
+    	
         super("Fenetre");
         qteLigneFraisForfaitTB = new HashMap<javax.swing.text.Document, LigneFraisForfait>();
         
         //Init pseudo group box
         lignesHorsFraisForfaitPanel = new JPanel();
-        lignesHorsFraisForfaitPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Lignes hors frais  forfait"));
+        lignesHorsFraisForfaitPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.white),"Lignes hors frais  forfait"));
         lignesHorsFraisForfaitPanel.setLayout(new GridLayout());
         
         lignesFraisForfaitsPanel = new JPanel();
-        lignesFraisForfaitsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Lignes frais forfait"));
+        lignesFraisForfaitsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.white),"Lignes frais forfait"));
         
         
         selectionFichePanel = new JPanel();
-        selectionFichePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black),"Selectionner une fiche"));
+        selectionFichePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.white),"Selectionner une fiche"));
         selectionFichePanel.setLayout(new GridLayout(3,2));//
         //----------------------------------
         
@@ -256,6 +258,19 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
         valider.addActionListener(this);
         layout.putConstraint(SpringLayout.NORTH, panVal, 5, SpringLayout.SOUTH, lignesHorsFraisForfaitPanel);   
         
+        //Couleur de la société:
+        lignesFraisForfaitsPanel.setBackground(new Color(119,170,221));
+        lignesHorsFraisForfaitPanel.setBackground(new Color(119,170,221));
+        selectionFichePanel.setBackground(new Color(119,170,221));
+        panVal.setBackground(new Color(119,170,221));
+        p1.setBackground(new Color(119,170,221));
+        p2.setBackground(new Color(119,170,221));
+        p3.setBackground(new Color(119,170,221));
+        
+        getContentPane().setBackground(new Color(119,170,221));
+        
+        lab_listeFicheFrais.setForeground(Color.white);
+        lab_listeVisiteurs.setForeground(Color.white);
     }
     
     private void centrer()
@@ -350,7 +365,9 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 			if((Boolean) lignesHorsFraisForfaitTable.getValueAt(i, 3))
 			{
 				this.current_fiche.getLignesFraisHorsForfait().get(i).refuser();
-				this.lignesHorsFraisForfaitTable.setValueAt(current_fiche.getLignesFraisHorsForfait().get(i).getLibelle(), i, 0);
+				
+				String libelle = current_fiche.getLignesFraisHorsForfait().get(i).getLibelle();
+				
 				this.lignesHorsFraisForfaitTable.setValueAt(current_fiche.getLignesFraisHorsForfait().get(i).getMontant(), i, 2);
 			}
 		}
@@ -366,7 +383,9 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 			if((Boolean) lignesHorsFraisForfaitTable.getValueAt(i, 3))
 			{
 				this.current_fiche.getLignesFraisHorsForfait().get(i).accepter();
-				this.lignesHorsFraisForfaitTable.setValueAt(current_fiche.getLignesFraisHorsForfait().get(i).getLibelle(), i, 0);
+
+				String libelle = current_fiche.getLignesFraisHorsForfait().get(i).getLibelle();
+				//System.out.println(libelle);
 				this.lignesHorsFraisForfaitTable.setValueAt(current_fiche.getLignesFraisHorsForfait().get(i).getMontant(), i, 2);
 			}
 		}
@@ -412,6 +431,12 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 			tout_selectionner.setEnabled(false);
 			tout_deselectionner.setEnabled(false);
 		}
+		else
+		{
+			valider.setEnabled(true);
+			tout_selectionner.setEnabled(true);
+			tout_deselectionner.setEnabled(true);
+		}
 	}
 
 	private void updatePanelLignesFraisForfait(FicheFrais ficheFrais)
@@ -435,6 +460,8 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 			//new JDialog(this,lff.getLibelle()).setVisible(true);
 			sousPanels[nbLignes - 1] = new JPanel(new FlowLayout(FlowLayout.LEFT));
 			JLabel libFrais = new JLabel(lff.getLibelle());
+			libFrais.setForeground(Color.white);
+			sousPanels[nbLignes - 1].setBackground(new Color(119,170,221));
 			sousPanels[nbLignes - 1].add(libFrais);
 			JTextField tf = new JTextField(4);
 			
@@ -475,7 +502,7 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 		//--
 		
 		JPanel p1 = new JPanel();
-		
+		p1.setBackground(new Color(119,170,221));
 		
 		//Initialisation de la table
 		Object[] colonnes = {"Libellé","Date","Montant","Sélectionner"};
@@ -491,11 +518,11 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 		}
 		
 		lignesHorsFraisForfaitTable = new JTable(lignes,colonnes);
+		
 		lignesHorsFraisForfaitTable.getModel().addTableModelListener(this);
 		lignesHorsFraisForfaitTable.getColumn("Libellé").setPreferredWidth(200);
 		lignesHorsFraisForfaitTable.getColumn("Date").setPreferredWidth(70);
 		lignesHorsFraisForfaitTable.getColumn("Montant").setPreferredWidth(50);
-		
 		
 		
 		//check box dans la colonne sélectionner : 
@@ -516,12 +543,15 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 		JScrollPane scrollTable = new JScrollPane(lignesHorsFraisForfaitTable);
 		scrollTable.setPreferredSize(new Dimension(550,150));
 		
+		scrollTable.setBackground(new Color(119,170,221));
+		
 		p1.add(scrollTable);
 		lignesHorsFraisForfaitPanel.add(p1);
 		
 		//-----------BOUTONS------------------------------
 
 		JPanel p2 = new JPanel();
+		p2.setBackground(new Color(119,170,221));
 		
 		p2.add(tout_selectionner);
 		p2.add(tout_deselectionner);
@@ -536,6 +566,8 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 		lignesHorsFraisForfaitTable.getTableHeader().setReorderingAllowed(false);
 		lignesHorsFraisForfaitPanel.add(p2);
 		
+		
+		
 		if(current_fiche.getIdEtat().equals("VA") || current_fiche.getIdEtat().equals("RB"))
 		{
 			lignesHorsFraisForfaitTable.setEnabled(false);
@@ -548,12 +580,24 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 			tout_selectionner.setEnabled(true);
 			tout_deselectionner.setEnabled(true);
 		}
+		
+		
 	}
 	
 	public void setConnecte(boolean connecte)
 	{
 		se_deconnecter.setEnabled(connecte);
 		se_connecter.setEnabled(!connecte);
+		
+		//---
+		if(!connecte)
+		{
+			lignesFraisForfaitsPanel.setVisible(false);
+			lignesHorsFraisForfaitPanel.setVisible(false);
+		}
+		liste_fichesFrais.setEnabled(connecte);
+		liste_visiteurs.setEnabled(connecte);
+		selectionnerFiche.setEnabled(connecte);
 	}
 
 	@Override
@@ -608,7 +652,14 @@ public class Fenetre extends JFrame implements ActionListener, TableModelListene
 					
 					lignesHorsFraisForfaitTable.setValueAt(current_fiche.getLignesFraisHorsForfait().get(i).getMontant(), i, 2);
 				}
-				current_fiche.getLignesFraisHorsForfait().get(i).setDate(new java.sql.Date(((Date)lignesHorsFraisForfaitTable.getValueAt(i, 1)).getTime()));
+				
+				Object o = lignesHorsFraisForfaitTable.getValueAt(i, 1);
+				
+				if(o instanceof Date)
+				{
+					java.sql.Date d = new java.sql.Date(((Date)o).getTime());
+					current_fiche.getLignesFraisHorsForfait().get(i).setDate(d);
+				}
 			}
 		}
 		

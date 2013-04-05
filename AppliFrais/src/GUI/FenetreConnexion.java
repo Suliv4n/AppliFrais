@@ -60,6 +60,12 @@ public class FenetreConnexion extends JDialog implements ActionListener
 		
 		bouton_annuler.addActionListener(this);
 		bouton_connecter.addActionListener(this);
+		p1.setBackground(new Color(119,170,221));
+		p2.setBackground(new Color(119,170,221));
+		p3.setBackground(new Color(119,170,221));
+		
+		lab_id.setForeground(Color.white);
+		lab_mdp.setForeground(Color.white);
 		
 		this.add(p1);
 		this.add(p2);

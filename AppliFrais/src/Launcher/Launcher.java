@@ -36,6 +36,7 @@ public class Launcher
 		{
 			lesVisiteurs = Passerelle.getLesVisiteurs();
 			fenetre = new Fenetre();
+			fenetre.setConnecte(false);
 			fenetre.setVisible(true);
 			connecter();
 		} 

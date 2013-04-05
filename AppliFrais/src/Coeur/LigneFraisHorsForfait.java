@@ -36,7 +36,8 @@ public class LigneFraisHorsForfait {
 	{
 		this.montant = montant;
 	}
-	public String getLibelle() {
+	public String getLibelle() 
+	{
 		return libelle;
 	}
 	public void setLibelle(String libelle) {
@@ -67,8 +68,10 @@ public class LigneFraisHorsForfait {
 	
 	@Override
 	public String toString() {
-		return "LigneFraisHorsForfait [id=" + id + ", date=" + date
+		/*return "LigneFraisHorsForfait [id=" + id + ", date=" + date
 				+ ", montant=" + montant + ", libelle=" + libelle + "]";
+		*/
+		return libelle;
 	}
 	
 	/**

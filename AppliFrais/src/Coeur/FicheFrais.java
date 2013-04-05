@@ -229,9 +229,6 @@ public class FicheFrais implements Comparable
 		
 	}
 
-
-
-
 	@Override
 	public int compareTo(Object o) 
 	{
